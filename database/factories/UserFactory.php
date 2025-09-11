@@ -29,6 +29,17 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'dNasc' => $this->faker->date('Y-m-d', '2005-01-01'),
+            'cidade' => $this->faker->city(),
+            'cep' => $this->faker->postcode(),
+            'logradouro' => $this->faker->streetAddress(),
+            'estado' => $this->faker->state(),
+            'bairro' => $this->faker->streetName(),
+            'complemento' => $this->faker->secondaryAddress(),
+            'cpf' => $this->faker->numerify('###.###.###-##'),
+            'foto' => null,
+            'remember_token' => Str::random(10),
+            'saldo' => $this->faker->randomFloat(2,0,1000),
         ];
     }
 
