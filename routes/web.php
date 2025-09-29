@@ -28,11 +28,13 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
 
 Route::get('/home_page', [HpController::class, 'index'])->middleware('auth')->name('home_page');
+Route::get('/', [HpController::class, 'index'])->name('home');
+Route::get('/produtos/search', [HpController::class, 'search'])->name('produtos.search');
 
 
-Route::get('/', [ProdutoController::class, 'index'])->name('produtos.index');
-Route::get('/produtos/{id}', [ProdutoController::class, 'show'])->name('produtos.show');
+Route::get('/produtos', [ProdutoController::class, 'index'])->name('produtos.index');
+Route::get('/produtos/{id}', [ProdutoController::class, 'show'])->name('produtos.pvi');
 Route::get('/produtos/{id}/comprar', [ProdutoController::class, 'comprar'])->name('produtos.comprar');
-Route::get('/produtos/search', [ProdutoController::class, 'search'])->name('produtos.search');
+
 
 Route::post('/produtos/{id}/comprar', [ProdutoController::class, 'finalizarCompra'])->name('produtos.finalizarCompra');

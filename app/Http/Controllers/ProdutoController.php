@@ -17,9 +17,7 @@ class ProdutoController extends Controller
     public function show($id)
     {
        $produto = Produto::with('vendedor')->findOrFail($id);
-        return view('produtos.show', compact('produto'));
-
-
+        return view('produtos.pvi_product', compact('produto'));
     }
 
     public function comprar($id)
@@ -28,14 +26,6 @@ class ProdutoController extends Controller
         return view('produtos.compra', compact('produto'));
     }
 
-    public function search(Request $request)
-    {
-        $query = $request->input('search');
-        $produtos = Produto::where('nome', 'like', "%$query%")
-            ->orWhere('desc', 'like', "%$query%")
-            ->get();
-        return view('home', compact('produtos'));
-    }
 
     public function finalizarCompra(Request $request, $id)
     {
@@ -49,8 +39,6 @@ class ProdutoController extends Controller
         
         $produto->quantidade -= $quantidade;
         $produto->save();
-
-        
 
         return redirect()->route('produtos.index')->with('success', 'Compra realizada com sucesso!');
     }
