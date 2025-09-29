@@ -17,6 +17,20 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->date('dNasc');
+
+            $table->string('cidade');
+            $table->string('cep');
+            $table->string('logradouro');
+            $table->string('estado');
+            $table->string('bairro');
+            $table->string('complemento');
+
+            $table->string('cpf');
+            $table->string('foto')->nullable();
+            $table->float('saldo',8,2);
+
+
             $table->rememberToken();
             $table->timestamps();
         });

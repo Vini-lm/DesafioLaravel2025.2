@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\HpController;
+use App\Http\Controllers\ProdutoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,3 +21,18 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+
+
+
+Route::get('/home_page', [HpController::class, 'index'])->middleware('auth')->name('home_page');
+
+
+Route::get('/', [ProdutoController::class, 'index'])->name('produtos.index');
+Route::get('/produtos/{id}', [ProdutoController::class, 'show'])->name('produtos.show');
+Route::get('/produtos/{id}/comprar', [ProdutoController::class, 'comprar'])->name('produtos.comprar');
+Route::get('/produtos/search', [ProdutoController::class, 'search'])->name('produtos.search');
+
+Route::post('/produtos/{id}/comprar', [ProdutoController::class, 'finalizarCompra'])->name('produtos.finalizarCompra');
