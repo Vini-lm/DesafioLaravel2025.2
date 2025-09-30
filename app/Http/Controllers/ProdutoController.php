@@ -10,10 +10,12 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 use LaravelDaily\LaravelCharts\Classes\LaravelChart;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
 
 class ProdutoController extends Controller
 {
-   
+    use AuthorizesRequests; 
+    
     public function finalizarCompra(Request $request, $id)
     {
         $request->validate([
@@ -30,7 +32,7 @@ class ProdutoController extends Controller
 
         
         DB::transaction(function () use ($produto, $quantidadeComprada, $comprador) {
-           
+            
             $produto->quantidade -= $quantidadeComprada;
             $produto->save();
 
@@ -49,7 +51,7 @@ class ProdutoController extends Controller
     }
 
 
-  
+    
     
 public function manage()
 {
@@ -129,16 +131,22 @@ public function manage()
 
     public function edit(Produto $produto)
     {
-        if (!Auth::user()->isAdmin && Auth::denies('update', $produto)) {
-            abort(403);
+        $user = Auth::user();
+        
+       
+        if (!$user->isAdmin && $user->id !== $produto->vendedor_id) {
+            abort(403, 'Erro, sem permissão');
         }
+
         return view('produtos.edit', compact('produto'));
     }
 
     public function update(Request $request, Produto $produto)
     {
-        if (!Auth::user()->isAdmin && Auth::denies('update', $produto)) {
-            abort(403);
+        $user = Auth::user();
+
+        if (!$user->isAdmin && $user->id !== $produto->vendedor_id) {
+            abort(403, 'Erro, sem permissão');
         }
 
         $data = $request->validate([
@@ -161,8 +169,9 @@ public function manage()
 
     public function destroy(Produto $produto)
     {
-        if (!Auth::user()->isAdmin && Auth::denies('delete', $produto)) {
-            abort(403);
+        $user = Auth::user();
+        if (!$user->isAdmin && $user->id !== $produto->vendedor_id) {
+            abort(403, 'Erro, sem permissão');
         }
 
         $produto->delete();

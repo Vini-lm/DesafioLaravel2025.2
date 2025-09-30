@@ -35,7 +35,7 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::middleware(['auth'])->group(function () {
     Route::get('/home_page', [HpController::class, 'index'])->middleware('auth')->name('home_page');
     Route::get('/', [HpController::class, 'index'])->name('home');
-    Route::get('/produtos/search', [HpController::class, 'search'])->name('produtos.search');
+    //Route::get('/produtos/search', [HpController::class, 'search'])->name('produtos.search');
 
     Route::get('/produtos', [ProdutoController::class, 'index'])->name('produtos.index');
     Route::get('/produtos/manage', [ProdutoController::class, 'manage'])->name('admin.produtos.manage');
