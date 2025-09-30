@@ -30,6 +30,7 @@ class User extends Authenticatable
         'complemento',
         'cpf',
         'isAdmin',
+        'foto',
         'saldo',
         'created_by',
     ];

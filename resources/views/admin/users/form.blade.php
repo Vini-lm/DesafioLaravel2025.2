@@ -78,7 +78,7 @@
         </div>
         <div>
             <label for="estado" class="block text-sm font-medium text-gray-700">Estado</label>
-            <input type="text" name="estado" id="estado" value="{{ old('estado', $user->estado ?? '') }}" required readonly maxlength="2"
+            <input type="text" name="estado" id="estado" value="{{ old('estado', $user->estado ?? '') }}" required readonly maxlength="10"
                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-gray-100">
         </div>
         <div>

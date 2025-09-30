@@ -3,19 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index()
     {
         $users = User::with('creator')->latest()->paginate(10);
-        
         return view('admin.users.crud', compact('users'));
     }
 
@@ -30,7 +32,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'cpf' => ['required', 'string', 'max:14'], 
+            'cpf' => ['required', 'string', 'max:14'],
             'dNasc' => ['required', 'date'],
             'cep' => ['required', 'string', 'max:9'],
             'logradouro' => ['required', 'string', 'max:255'],
@@ -49,7 +51,7 @@ class UserController extends Controller
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('profile-photos', 'public');
         }
-        
+
         $data['isAdmin'] = $request->has('isAdmin');
 
         User::create($data);
@@ -70,7 +72,7 @@ class UserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class.',email,'.$user->id],
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()], 
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'cpf' => ['required', 'string', 'max:14'],
             'dNasc' => ['required', 'date'],
             'cep' => ['required', 'string', 'max:9'],
@@ -84,18 +86,20 @@ class UserController extends Controller
         ]);
 
         $data = $request->except('password', 'foto', 'password_confirmation');
-        
+
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
 
         if ($request->hasFile('foto')) {
+            
             if ($user->foto) {
                 Storage::disk('public')->delete($user->foto);
             }
+           
             $data['foto'] = $request->file('foto')->store('profile-photos', 'public');
         }
-        
+
         $data['isAdmin'] = $request->has('isAdmin');
 
         $user->update($data);
@@ -115,21 +119,15 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'Utilizador excluído com sucesso.');
     }
-    
-    public function cepApi($cep)
+
+    public function getCepData(string $cep)
     {
         $cep = preg_replace('/[^0-9]/', '', $cep);
-
-        if (strlen($cep) !== 8) {
-            return response()->json(['error' => 'CEP inválido.'], 400);
-        }
-
         $response = Http::get("https://viacep.com.br/ws/{$cep}/json/");
-
         if ($response->failed() || isset($response->json()['erro'])) {
-            return response()->json(['error' => 'CEP não encontrado.'], 404);
+            return response()->json(['erro' => 'CEP não encontrado'], 404);
         }
-
-        return response()->json($response->json());
+        return $response->json();
     }
 }
+
