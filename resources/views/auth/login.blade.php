@@ -40,4 +40,7 @@
     </form>
 
 </div>
+</x-guest-layout>
 </body>
+
+

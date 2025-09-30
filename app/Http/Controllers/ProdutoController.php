@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use ConsoleTVs\Charts\Classes\Chartjs\Chart;
-
+use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 
 class ProdutoController extends Controller
 {
@@ -50,52 +50,37 @@ class ProdutoController extends Controller
 
 
   
-    public function manage()
-    {
-        $user = Auth::user();
-        $chart = null; 
+    
+public function manage()
+{
+    $user = Auth::user();
+    $chart = null; 
 
-        if ($user->isAdmin) {
-            
-            $produtos = Produto::with('vendedor')->latest()->get();
+    if ($user->isAdmin) {
+        
+        $produtos = Produto::with('vendedor')->latest()->get();
 
-            $labels = [];
-            $data = [];
-            Carbon::setLocale('pt_BR');
-            $startDate = Carbon::now()->subMonths(11)->startOfMonth();
-            $monthKeys = [];
+        
+        $chart_options = [
+            'chart_title' => 'Produtos cadastrados por mês',
+            'model' => Produto::class,
+            'chart_type' => 'bar',
+            'report_type' => 'group_by_date',
+            'group_by_field' => 'created_at',
+            'group_by_period' => 'month',
+            'chart_color' => '0, 122, 255',
+            'last_days' => 365,
+        ];
 
-            for ($i = 0; $i < 12; $i++) {
-                $labels[] = $startDate->isoFormat('MMM/YY');
-                $monthKeys[] = $startDate->format('Y-m');
-                $startDate->addMonth();
-            }
+        
+        $chart = new LaravelChart($chart_options);
 
-            $productCounts = Produto::select(
-                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
-                DB::raw('COUNT(*) as count')
-            )
-            ->where('created_at', '>=', Carbon::now()->subMonths(12))
-            ->groupBy('month')
-            ->pluck('count', 'month');
-
-            foreach ($monthKeys as $month) {
-                $data[] = (int) ($productCounts[$month] ?? 0);
-            }
-
-            $chart = new Chart;
-            $chart->title('Produtos Cadastrados nos Últimos 12 Meses');
-            $chart->labels($labels);
-            $chart->dataset('Produtos Cadastrados', 'bar', $data)
-                    ->backgroundColor('rgba(59, 130, 246, 0.7)')
-                    ->color('rgba(59, 130, 246, 1)');
-
-        } else {
-            $produtos = Produto::where('vendedor_id', $user->id)->latest()->get();
-        }
-
-        return view('produtos.manage', compact('produtos', 'chart'));
+    } else {
+        $produtos = Produto::where('vendedor_id', $user->id)->latest()->get();
     }
+
+    return view('produtos.manage', compact('produtos', 'chart'));
+}
 
     public function index()
     {

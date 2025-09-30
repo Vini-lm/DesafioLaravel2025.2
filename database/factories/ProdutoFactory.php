@@ -24,7 +24,9 @@ class ProdutoFactory extends Factory
             'quantidade' => $this->faker->numberBetween(1,100),
             'preco' => $this->faker->randomFloat(2,10,1000),
             'vendedor_id' => User::inRandomOrder()->first()->id, 
-            'foto' => null
+            'foto' => null,
+            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'updated_at' => now(),
         ];
     }
 }

@@ -27,10 +27,13 @@
                 </div>
             @endif
 
-            
-            @if(Auth::user()->isAdmin && isset($chart))
+
+            @if(Auth::user()->isAdmin && isset($chart)) <!-- Gráfico do LaravelChart -->
                 <div class="mb-8 bg-white p-6 rounded-lg shadow-sm">
-                    {!! $chart->container() !!}
+                    {!! $chart->renderHtml() !!}
+
+                    {!!  $chart->renderChartJsLibrary()!!}
+                    {!! $chart->renderJs() !!}
                 </div>
             @endif
 
@@ -99,7 +102,5 @@
     </div>
     
     
-    @if(Auth::user()->isAdmin && isset($chart))
-        {!! $chart->script() !!}
-    @endif
+    
 </x-app-layout>
