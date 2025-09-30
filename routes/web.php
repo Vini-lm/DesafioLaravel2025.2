@@ -6,6 +6,7 @@ use App\Http\Controllers\HpController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\VendaController;
 use App\Http\Controllers\CompraController;
+use App\Http\Controllers\PagSeguroController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -32,12 +33,10 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
 
 Route::middleware(['auth'])->group(function () {
-    //Rotas da HomePage
     Route::get('/home_page', [HpController::class, 'index'])->middleware('auth')->name('home_page');
     Route::get('/', [HpController::class, 'index'])->name('home');
     Route::get('/produtos/search', [HpController::class, 'search'])->name('produtos.search');
 
-    //Rotas de produto
     Route::get('/produtos', [ProdutoController::class, 'index'])->name('produtos.index');
     Route::get('/produtos/manage', [ProdutoController::class, 'manage'])->name('admin.produtos.manage');
     Route::get('/produtos/create', [ProdutoController::class, 'create'])->name('admin.produtos.create');
@@ -50,16 +49,13 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/produtos/{produto}', [ProdutoController::class, 'destroy'])->name('admin.produtos.destroy');
 
 
-    //Rotas de venda
     Route::get('/vendas/historico', [VendaController::class, 'historico'])->name('vendas.historico');
     Route::get('/vendas/relatorio-pdf', [VendaController::class, 'gerarPdf'])->name('vendas.pdf');
 
-    //Rotas de Compra 
     Route::get('/compras/historico', [CompraController::class, 'historico'])->name('compras.historico');
     Route::get('/compras/relatorio-pdf', [CompraController::class, 'gerarPdf'])->name('compras.pdf');
 });
 
-//Rotas de users
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -77,6 +73,13 @@ Route::get('/user', function(Request $request){
 })->middleware('auth:sanctum')->name('user');
 
 Route::get('/api/cep/{cep}', [UserController::class, 'cepApi'])->name('cep.api');
+
+
+Route::post('/checkout',[PagSeguroController::class, 'createCheckout'])->name('pagseguro.checkout');
+
+Route::get('/erro-pagamento', function () {
+    return view('pagamento-erro');
+})->name('pagamento.erro');
 
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

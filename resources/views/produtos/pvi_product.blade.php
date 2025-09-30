@@ -1,53 +1,56 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <title>{{ $produto->nome }}</title>
-</head>
-<body class="bg-gray-100 flex justify-center items-center min-h-screen">
-    <div class="bg-white shadow-lg rounded-lg p-6 w-2/3">
-        <h1 class="text-3xl font-bold mb-4">{{ $produto->nome }}</h1>
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Detalhes do Produto
+        </h2>
+    </x-slot>
 
-        
-        @if($produto->foto)
-            <img src="{{ asset('storage/' . $produto->foto) }}" 
-                 alt="{{ $produto->nome }}" 
-                 class="w-64 h-64 object-cover rounded-lg mb-4">
-        @else
-            <p class="italic text-gray-500 mb-4">Foto não adicionada!</p>
-        @endif
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 md:p-12 bg-white border-b border-gray-200">
+                    <div class="flex flex-col md:flex-row gap-8 md:gap-12">
+                        
+                        <div class="md:w-1/2">
+                            <img src="{{ $produto->foto ? asset('storage/' . $produto->foto) : 'https://placehold.co/600x600/e2e8f0/adb5bd?text=Produto' }}" 
+                                 alt="{{ $produto->nome }}" 
+                                 class="w-full h-auto rounded-lg shadow-md object-cover aspect-square">
+                        </div>
+                        
+                        <div class="md:w-1/2 flex flex-col">
+                            <h1 class="text-4xl font-bold text-gray-900">{{ $produto->nome }}</h1>
+                            <span class="inline-block bg-gray-200 text-gray-800 text-xs font-semibold mt-2 mr-2 px-2.5 py-0.5 rounded-full w-max">{{ $produto->categoria }}</span>
 
-      
-        <p class="mb-2"><strong>Descrição:</strong> {{ $produto->desc }}</p>
-        <p class="mb-2"><strong>Preço:</strong> R$ {{ number_format($produto->preco, 2, ',', '.') }}</p>
-        <p class="mb-2"><strong>Categoria:</strong> {{ $produto->categoria }}</p>
-        <p class="mb-2"><strong>Estoque disponível:</strong> {{ $produto->quantidade }}</p>
+                            <p class="text-gray-600 mt-4 text-base leading-relaxed flex-grow">{{ $produto->desc }}</p>
 
-       
-        <p class="mb-2"><strong>Vendedor:</strong> {{ $produto->vendedor->name ?? 'Desconhecido' }}</p>
+                            <div class="mt-6">
+                                <p class="text-sm text-gray-500">Estoque disponível: <span class="font-bold text-gray-700">{{ $produto->quantidade }} unidades</span></p>
+                                <p class="text-5xl font-extrabold text-indigo-600 my-4">R$ {{ number_format($produto->preco, 2, ',', '.') }}</p>
+                            </div>
+                            
+                            <hr class="my-6">
 
-       
-        <p class="mb-2 text-sm text-gray-600">
-            <strong>Criado em:</strong> {{ $produto->created_at->format('d/m/Y H:i') }}
-        </p>
-        <p class="mb-4 text-sm text-gray-600">
-            <strong>Atualizado em:</strong> {{ $produto->updated_at->format('d/m/Y H:i') }}
-        </p>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">Informações do Vendedor</h3>
+                                <p class="text-gray-600 mt-2"><strong>Nome:</strong> {{ $produto->vendedor->name ?? 'Desconhecido' }}</p>
+                                <p class="text-gray-600"><strong>Contato (E-mail):</strong> {{ $produto->vendedor->email ?? 'Não disponível' }}</p>
+                            </div>
 
-        
-        <div class="flex gap-4">
-            <a href="{{ route('produtos.index') }}"
-               class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-                Voltar
-            </a>
+                            <div class="mt-8 flex gap-4">
+                                <a href="{{ url()->previous() }}" class="flex-1 text-center bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition duration-300">
+                                    Voltar
+                                </a>
 
-            <a href="{{ route('produtos.comprar', $produto->id) }}"
-               class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                Comprar
-            </a>
+                                @if(!Auth::user()->isAdmin)
+                                    <a href="{{ route('produtos.comprar', $produto->id) }}" class="flex-1 text-center bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">
+                                        Comprar
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</body>
-</html>
+</x-app-layout>

@@ -1,13 +1,10 @@
-{{-- 1. Aqui dizemos para usar o layout 'app' que criamos --}}
 <x-app-layout>
-    
-    {{-- 2. Este conteúdo vai para o slot 'header' do layout --}}
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Página Inicial') }}
             </h2>
-             <form method="GET" action="{{ route('produtos.search') }}" class="w-1/3 flex gap-2">
+            <form method="GET" action="{{ route('produtos.search') }}" class="w-1/3 flex gap-2">
                 <input name="search" type="text" placeholder="Pesquisar por nome, categoria..."
                        class="border rounded-lg p-2 w-full focus:ring-indigo-500 focus:border-indigo-500">
                 <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
@@ -17,12 +14,11 @@
         </div>
     </x-slot>
 
-    {{-- 3. Todo o resto é o conteúdo principal e vai para o '$slot' do layout --}}
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                     <div class="overflow-x-auto">
+                    <div class="overflow-x-auto">
                         <table class="w-full bg-white">
                             <thead class="bg-gray-50">
                                 <tr>
@@ -43,8 +39,13 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $produto->categoria }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{{ $produto->quantidade }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
-                                        <a href="{{ route('produtos.pvi', $produto->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-4">Ver</a>
-                                        <a href="{{ route('produtos.comprar', $produto->id) }}" class="text-green-600 hover:text-green-900">Comprar</a>
+                                        <div class="flex items-center justify-center gap-4">
+                                            <a href="{{ route('produtos.pvi', $produto->id) }}" class="text-indigo-600 hover:text-indigo-900">Ver</a>
+                                            
+                                            @if(!Auth::user()->isAdmin)
+                                                <a href="{{ route('produtos.comprar', $produto->id) }}" class="text-green-600 hover:text-green-900">Comprar</a>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                                 @empty
