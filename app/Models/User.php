@@ -21,9 +21,20 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'dNasc', 
-        'cidade', 'cep', 'logradouro', 'estado',
-        'bairro', 'complemento', 'cpf', 'saldo'
+        'dNasc',
+        'cidade',
+        'cep',
+        'logradouro',
+        'estado',
+        'bairro',
+        'complemento',
+        'cpf',
+        'isAdmin',
+        'saldo'
+    ];
+
+    protected $casts = [
+        'isAdmin' => 'boolean',
     ];
 
     /**

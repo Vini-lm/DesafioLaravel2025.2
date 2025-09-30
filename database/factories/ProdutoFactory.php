@@ -15,7 +15,7 @@ class ProdutoFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+     public function definition(): array
     {
         return [
             'nome' => $this->faker->word(),
@@ -23,7 +23,8 @@ class ProdutoFactory extends Factory
             'categoria' => $this->faker->randomElement(['Roupa','Livro','Celular','Acessorios']),
             'quantidade' => $this->faker->numberBetween(1,100),
             'preco' => $this->faker->randomFloat(2,10,1000),
-            'vendedor_id' => User::factory()
+            'vendedor_id' => User::inRandomOrder()->first()->id, 
+            'foto' => null
         ];
     }
 }

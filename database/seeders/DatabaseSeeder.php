@@ -6,8 +6,10 @@ use App\Models\Administrador;
 use App\Models\Compra;
 use App\Models\Produto;
 use App\Models\User;
+use App\Models\Venda;   
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,20 +23,24 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => '123',
+            'password' => Hash::make('123'),
         ]);
         User::factory()->create([
             'name' => 'Vinicius',
             'email' => 'vinicius@gmail.com',
-            'password' => '123',
+            'password' => Hash::make('123'),
+            'isAdmin' => true,
         ]);
 
-        User::factory(20)->create();
-        Administrador::factory(10)->create();
-        Produto::factory(30)->create();
-        Compra::factory(20)->create([
-            'cliente_id' => User::inRandomOrder()->first()->id,
-            'produto_id' => Produto::inRandomOrder()->first()->id,
-        ]);
+       
+        User::factory(10)->create()->each(function ($user) {
+            Produto::factory(rand(1, 5))->create([
+                'vendedor_id' => $user->id,
+            ]);
+        });
+
+        
+        Venda::factory(50)->create();
+
     }
 }

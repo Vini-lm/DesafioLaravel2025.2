@@ -39,11 +39,12 @@ class UserFactory extends Factory
             'cpf' => $this->faker->numerify('###.###.###-##'),
             'foto' => null,
             'remember_token' => Str::random(10),
-            'saldo' => $this->faker->randomFloat(2,0,1000),
+            'isAdmin' => $isAdmin = random_int(0, 1),
+            'saldo' => $isAdmin ? 0 : $this->faker->randomFloat(2, 0, 1000),
+
         ];
     }
-
-    /**
+   /**
      * Indicate that the model's email address should be unverified.
      */
     public function unverified(): static

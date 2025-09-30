@@ -28,6 +28,7 @@ return new class extends Migration
 
             $table->string('cpf');
             $table->string('foto')->nullable();
+            $table->boolean('isAdmin')->default(false);
             $table->float('saldo',8,2);
 
 
