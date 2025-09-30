@@ -55,6 +55,7 @@
                                     <tr>
                                         <th scope="col" class="px-6 py-3">Foto</th>
                                         <th scope="col" class="px-6 py-3">Nome</th>
+                                        <th scope="col" class="px-6 py-3">Desc</th>
                                         <th scope="col" class="px-6 py-3">Categoria</th>
                                         <th scope="col" class="px-6 py-3">Preço</th>
                                         <th scope="col" class="px-6 py-3 text-center">Estoque</th>
@@ -72,6 +73,7 @@
                                                      alt="Foto do produto" class="h-12 w-12 object-cover rounded-md">
                                             </td>
                                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ $produto->nome }}</td>
+                                            <td class="px-6 py-4">{{ $produto->desc }}</td>
                                             <td class="px-6 py-4">{{ $produto->categoria }}</td>
                                             <td class="px-6 py-4">R$ {{ number_format($produto->preco, 2, ',', '.') }}</td>
                                             <td class="px-6 py-4 text-center">{{ $produto->quantidade }}</td>

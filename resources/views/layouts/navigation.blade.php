@@ -6,7 +6,7 @@
                 
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('home_page') }}" class="font-bold text-gray-800">
-                        Sem nome
+                        Vinas Commerce
                     </a>
                 </div>
 

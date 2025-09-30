@@ -33,7 +33,7 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::middleware(['auth'])->group(function () {
 
 
-    //Rotas da HP
+    //Rotas da HomePage
     Route::get('/home_page', [HpController::class, 'index'])->middleware('auth')->name('home_page');
     Route::get('/', [HpController::class, 'index'])->name('home');
     Route::get('/produtos/search', [HpController::class, 'search'])->name('produtos.search');
