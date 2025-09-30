@@ -27,7 +27,7 @@
                                     <th scope="col" class="px-6 py-3">Foto</th>
                                     <th scope="col" class="px-6 py-3">Nome</th>
                                     <th scope="col" class="px-6 py-3">Email</th>
-                                    <th scope="col" class="px-6 py-3">Cidade</th>
+                                    <th scope="col" class="px-6 py-3">Criado por</th> 
                                     <th scope="col" class="px-6 py-3 text-center">Admin</th>
                                     <th scope="col" class="px-6 py-3 text-center">Ações</th>
                                 </tr>
@@ -41,22 +41,28 @@
                                         </td>
                                         <td class="px-6 py-4 font-medium text-gray-900">{{ $user->name }}</td>
                                         <td class="px-6 py-4">{{ $user->email }}</td>
-                                        <td class="px-6 py-4">{{ $user->cidade }}</td>
+                                        <td class="px-6 py-4">{{ $user->creator->name ?? 'Sistema' }}</td> 
                                         <td class="px-6 py-4 text-center">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $user->isAdmin ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                                                 {{ $user->isAdmin ? 'Sim' : 'Não' }}
                                             </span>
                                         </td>
+                                       
                                         <td class="px-6 py-4 text-center">
                                             <div class="flex justify-center items-center gap-4">
-                                                <a href="{{ route('users.edit', $user->id) }}" class="font-medium text-blue-600 hover:underline">Editar</a>
-                                                @if(auth()->id() !== $user->id) 
-                                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="font-medium text-red-600 hover:underline">Excluir</button>
-                                                </form>
-                                                @endif
+                                                
+                                                @can('update', $user)
+                                                    <a href="{{ route('users.edit', $user->id) }}" class="font-medium text-blue-600 hover:underline">Editar</a>
+                                                @endcan
+
+                                               
+                                                @can('delete', $user)
+                                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="font-medium text-red-600 hover:underline">Excluir</button>
+                                                    </form>
+                                                @endcan
                                             </div>
                                         </td>
                                     </tr>
@@ -76,3 +82,4 @@
         </div>
     </div>
 </x-app-layout>
+

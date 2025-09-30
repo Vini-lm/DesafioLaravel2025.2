@@ -30,8 +30,11 @@ class User extends Authenticatable
         'complemento',
         'cpf',
         'isAdmin',
-        'saldo'
+        'saldo',
+        'created_by',
     ];
+
+    
 
     protected $casts = [
         'isAdmin' => 'boolean',
@@ -59,4 +62,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+     public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
 }

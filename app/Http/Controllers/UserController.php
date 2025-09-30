@@ -8,19 +8,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     public function index()
     {
+        $users = User::with('creator')->latest()->paginate(10);
         
-        $users = User::latest()->paginate(10);
         return view('admin.users.crud', compact('users'));
     }
 
     public function create()
     {
-        return view('admin.users.create');
+        return view('admin.users.create', ['user' => new User()]);
     }
 
     public function store(Request $request)
@@ -43,6 +44,7 @@ class UserController extends Controller
 
         $data = $request->except('password', 'foto');
         $data['password'] = Hash::make($request->password);
+        $data['created_by'] = Auth::id();
 
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('profile-photos', 'public');
@@ -52,16 +54,19 @@ class UserController extends Controller
 
         User::create($data);
 
-        return redirect()->route('users.index')->with('success', 'Usuário criado com sucesso.');
+        return redirect()->route('users.index')->with('success', 'Utilizador criado com sucesso.');
     }
 
     public function edit(User $user)
     {
+        $this->authorize('update', $user);
         return view('admin.users.edit', compact('user'));
     }
 
     public function update(Request $request, User $user)
     {
+        $this->authorize('update', $user);
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class.',email,'.$user->id],
@@ -83,7 +88,7 @@ class UserController extends Controller
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
-       
+
         if ($request->hasFile('foto')) {
             if ($user->foto) {
                 Storage::disk('public')->delete($user->foto);
@@ -95,23 +100,20 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('users.index')->with('success', 'Usuário atualizado com sucesso.');
+        return redirect()->route('users.index')->with('success', 'Utilizador atualizado com sucesso.');
     }
 
     public function destroy(User $user)
     {
-        if ($user->id === auth()->id ){
-            return back()->with('error', 'Você não pode excluir seu próprio usuário.');
-        }
+        $this->authorize('delete', $user);
 
-      
         if ($user->foto) {
             Storage::disk('public')->delete($user->foto);
         }
 
         $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'Usuário excluído com sucesso.');
+        return redirect()->route('users.index')->with('success', 'Utilizador excluído com sucesso.');
     }
     
     public function cepApi($cep)
