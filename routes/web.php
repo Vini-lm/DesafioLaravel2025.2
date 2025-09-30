@@ -6,8 +6,8 @@ use App\Http\Controllers\HpController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\VendaController;
 use Illuminate\Support\Facades\Route;
-
-
+use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,14 +31,10 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
 
 Route::middleware(['auth'])->group(function () {
-
-
     //Rotas da HomePage
     Route::get('/home_page', [HpController::class, 'index'])->middleware('auth')->name('home_page');
     Route::get('/', [HpController::class, 'index'])->name('home');
     Route::get('/produtos/search', [HpController::class, 'search'])->name('produtos.search');
-
-
 
     //Rotas de produto
     Route::get('/produtos', [ProdutoController::class, 'index'])->name('produtos.index');
@@ -58,7 +54,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/vendas/relatorio-pdf', [VendaController::class, 'gerarPdf'])->name('vendas.pdf');
 });
 
+//Rotas de usuario
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+});
+    
 
+Route::get('/user', function(Request $request){
+    return $request->user();
+})->middleware('auth:sanctum')->name('user');
+
+Route::get('/api/cep/{cep}', [UserController::class, 'cepApi'])->name('cep.api');
 
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

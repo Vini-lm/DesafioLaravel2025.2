@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('logradouro');
             $table->string('estado');
             $table->string('bairro');
-            $table->string('complemento');
+            $table->string('complemento')->nullable();
 
             $table->string('cpf');
             $table->string('foto')->nullable();
