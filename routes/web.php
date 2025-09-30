@@ -6,6 +6,7 @@ use App\Http\Controllers\HpController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\VendaController;
 use App\Http\Controllers\CompraController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PagSeguroController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -63,6 +64,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+  
 
     
 });
@@ -72,15 +74,20 @@ Route::get('/user', function(Request $request){
     return $request->user();
 })->middleware('auth:sanctum')->name('user');
 
+//rota da api de cep
 Route::get('/api/cep/{cep}', [UserController::class, 'cepApi'])->name('cep.api');
 
-
+//rota da api de pagamento
 Route::post('/checkout',[PagSeguroController::class, 'createCheckout'])->name('pagseguro.checkout');
 
 Route::get('/erro-pagamento', function () {
     return view('pagamento-erro');
 })->name('pagamento.erro');
 
+//rota de email
 
+
+
+//rota de logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 

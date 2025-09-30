@@ -26,29 +26,28 @@ class PagSeguroController extends Controller
         }
 
 
-
-
         $url = config('services.pagseguro.checkout_url');
         $token = config('services.pagseguro.token');
 
-        $product = json_decode($request->produto,true);
+        //$product = json_decode($request->produto,true);
+        
+        $items = [
+            [
+                'id' =>  $produto->id, 
+                'name' => $produto->nome,
+                'unit_amount' => $produto->preco * 100, 
+                'quantity' => $quantidade,
+            ]
+        ];
 
-        $items = array_map(fn ($produto) => [
-            'id' => $produto['id'],
-            'name' => $produto['nome'],
-            'unit_amount' => $produto['preco'] * 100,
-            'quantity' => $produto['quantidade'] ?? 1,
-        ], [$product]);
 
-
-        $response =  Http::withHeaders([
+        $response = Http::withHeaders([
             'Authorization' => "Bearer $token",
             'Content-Type' => 'application/json'
         ])->withoutVerifying()->post($url,[
             'reference_id' => uniqid(),
             'items' => $items,
         ]);
-
 
 
         if($response->successful())

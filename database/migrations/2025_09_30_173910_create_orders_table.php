@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('reference_id')->unique();
-            $table->string('status')->default('PENDING'); // Ex: PENDING, PAID, CANCELED
+            $table->string('status')->default('PENDING'); 
             $table->timestamps();
         });
     }
