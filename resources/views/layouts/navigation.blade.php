@@ -21,12 +21,16 @@
                     <x-nav-link :href="route('vendas.historico')" :active="request()->routeIs('vendas.historico')">
                         {{ __('Histórico de Vendas') }}
                     </x-nav-link>
-
+                    <x-nav-link :href="route('compras.historico')" :active="request()->routeIs('compras.historico')">
+                        {{ __('Minhas Compras') }}
+                    </x-nav-link>
                     @if(Auth::user()->isAdmin)
                     <x-nav-link :href="route('users.index')" ...>
                         {{ __('Gerenciar Usuários') }}
                     </x-nav-link>
                     @endif
+
+
                 </div>
             </div>
 

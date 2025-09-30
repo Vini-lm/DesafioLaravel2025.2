@@ -1,4 +1,3 @@
-{{-- Você pode estender seu layout principal, ex: @extends('layouts.app') --}}
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -8,9 +7,18 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            
+            @if(Auth::user()->isAdmin && isset($chart))
+                <div class="mb-8 bg-white p-6 rounded-lg shadow-sm">
+                    <h3 class="text-lg font-semibold mb-4">{{ $chart->options['chart_title'] }}</h3>
+                    {!! $chart->renderHtml() !!}
+                    {!! $chart->renderChartJsLibrary() !!}
+                    {!! $chart->renderJs() !!}
+                </div>
+            @endif
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-
                     
                     <form action="{{ route('vendas.historico') }}" method="GET" class="mb-8 p-4 border rounded-lg">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -33,14 +41,13 @@
                             </div>
                         </div>
                     </form>
-
-                   
+                    
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produto</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da Compra</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da Venda</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor Total</th>
                                     @if(Auth::user()->isAdmin)
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comprador</th>
@@ -97,3 +104,4 @@
         </div>
     </div>
 </x-app-layout>
+

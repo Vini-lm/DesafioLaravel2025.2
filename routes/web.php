@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HpController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\VendaController;
+use App\Http\Controllers\CompraController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -52,9 +53,13 @@ Route::middleware(['auth'])->group(function () {
     //Rotas de venda
     Route::get('/vendas/historico', [VendaController::class, 'historico'])->name('vendas.historico');
     Route::get('/vendas/relatorio-pdf', [VendaController::class, 'gerarPdf'])->name('vendas.pdf');
+
+    //Rotas de Compra 
+    Route::get('/compras/historico', [CompraController::class, 'historico'])->name('compras.historico');
+    Route::get('/compras/relatorio-pdf', [CompraController::class, 'gerarPdf'])->name('compras.pdf');
 });
 
-//Rotas de usuario
+//Rotas de users
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -62,6 +67,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    
 });
     
 
@@ -73,3 +80,4 @@ Route::get('/api/cep/{cep}', [UserController::class, 'cepApi'])->name('cep.api')
 
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+

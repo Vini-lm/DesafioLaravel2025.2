@@ -10,6 +10,8 @@ class Venda extends Model
 {
     use HasFactory;
 
+    protected $table = 'vendas';
+
     /**
      * @var array<int, string>
      */

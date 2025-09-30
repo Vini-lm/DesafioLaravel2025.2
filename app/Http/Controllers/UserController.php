@@ -120,14 +120,21 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Utilizador excluído com sucesso.');
     }
 
-    public function getCepData(string $cep)
+    public function cepApi($cep)
     {
         $cep = preg_replace('/[^0-9]/', '', $cep);
-        $response = Http::get("https://viacep.com.br/ws/{$cep}/json/");
-        if ($response->failed() || isset($response->json()['erro'])) {
-            return response()->json(['erro' => 'CEP não encontrado'], 404);
+
+        if (strlen($cep) !== 8) {
+            return response()->json(['error' => 'CEP inválido.'], 400);
         }
-        return $response->json();
+
+        $response = Http::get("https://viacep.com.br/ws/{$cep}/json/");
+
+        if ($response->failed() || isset($response->json()['erro'])) {
+            return response()->json(['error' => 'CEP não encontrado.'], 404);
+        }
+
+        return response()->json($response->json());
     }
 }
 
