@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Contact;
 
 class UserController extends Controller
 {
@@ -135,6 +138,39 @@ class UserController extends Controller
         }
 
         return response()->json($response->json());
+    }
+
+     public function createEmail(User $user)
+    {
+        return view('admin.users.send-email', compact('user'));
+    }
+
+    public function sendEmail(Request $request, User $user)
+    {
+        
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'message_content' => 'required|string|min:10',
+        ]);
+        
+        try {
+            
+            Mail::to($user->email)
+                ->send(new Contact([
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'subject' => $validated['subject'],
+                    'message' => $validated['message_content'] 
+                ]));
+
+         
+            return redirect()->route('users.index')->with('success', "E-mail enviado com sucesso para {$user->name} ({$user->email}).");
+
+        } catch (\Exception $e) {
+            
+            Log::error('Erro ao enviar e-mail para usuário: ' . $e->getMessage());
+            return redirect()->route('users.index')->with('error', 'Ocorreu um erro ao tentar enviar o e-mail. Verifique a configuração.');
+        }
     }
 }
 

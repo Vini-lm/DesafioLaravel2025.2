@@ -64,6 +64,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    Route::get('/users/{user}/email', [UserController::class, 'createEmail'])->name('users.email.create');
+    Route::post('/users/{user}/email', [UserController::class, 'sendEmail'])->name('users.email.send');
   
 
     
@@ -85,7 +88,8 @@ Route::get('/erro-pagamento', function () {
 })->name('pagamento.erro');
 
 //rota de email
-
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 
 //rota de logout
